@@ -1,0 +1,8 @@
+
+··································································································
+
+ Test Files  5 passed (5)
+      Tests  98 passed (98)
+   Start at  07:08:29
+   Duration  2.32s (tests 91%, import 5%, transform 3%, setup 1%)
+

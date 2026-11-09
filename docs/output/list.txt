@@ -1,0 +1,20 @@
+
+12 synthetic incidents
+
+ID         SEV   TITLE                                                TRAITS
+----------------------------------------------------------------------------------------------------------------------------------
+INC-5001   sev1  Checkout failures and order submission timeouts      misleading_evidence, red_herring_deploy, multi_service
+INC-5002   sev1  Login latency spike and intermittent auth timeouts   conflicting_observations, misleading_evidence
+INC-5003   sev1  Payments failing at checkout                         misleading_evidence, red_herring_deploy, tool_failure
+INC-5004   sev2  Search intermittently unavailable, recovering on i   tool_failure, incomplete_data
+INC-5005   sev2  Profile pages timing out, database suspected         misleading_evidence, conflicting_observations
+INC-5006   sev1  Total auth failure starting exactly at 00:00 UTC     multi_service
+INC-5007   sev2  About a quarter of order detail requests return 50   misleading_evidence
+INC-5008   sev1  Site-wide slowdown immediately after a cache node    conflicting_observations, tool_failure, multi_service
+INC-5009   sev1  Writes hanging across order, payment and user serv   multi_service, misleading_evidence
+INC-5010   sev4  Occasional slow recommendations, cause unclear       insufficient_evidence, tool_failure, incomplete_data
+INC-5011   sev2  SMS notifications stopped sending                    misleading_evidence, tool_failure, conflicting_observations
+INC-5012   sev2  Login failures climbing through a marketing campai   misleading_evidence, red_herring_deploy, multi_service
+
+Ground truth is stored with each scenario but is never shown to any agent;
+it is read only by the grader in src/eval/grade.ts after a run completes.
