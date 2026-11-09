@@ -104,6 +104,21 @@ export function renderMarkdown(r: EvalResults): string {
   }
   lines.push('');
 
+  // Token and model-call columns read zero under the deterministic engine by
+  // construction. Saying so in the report itself is better than leaving a
+  // reader to assume the metric was never implemented.
+  if ((multi?.meanLlmCalls ?? 0) === 0 && (single?.meanLlmCalls ?? 0) === 0) {
+    lines.push('> **On the zero token and LLM-call rows.** This run used the deterministic');
+    lines.push('> reasoning engine (`--engine=heuristic`), which reaches its conclusions by rule');
+    lines.push('> evaluation rather than by calling a model, so it consumes no tokens by');
+    lines.push('> construction. The accounting is implemented and exercised — every model call');
+    lines.push('> records its input and output tokens against the same budget and reports them');
+    lines.push('> here — it simply has nothing to count in this mode. Re-run with');
+    lines.push('> `--engine=llm` to populate these rows; see the *LLM mode* section of the');
+    lines.push('> README for what has and has not been measured that way.');
+    lines.push('');
+  }
+
   lines.push('## How to read these numbers');
   lines.push('');
   lines.push('- **Root-cause accuracy (strict)** requires the top-ranked hypothesis to name both the correct cause category and the correct suspect service, or to correctly report an inconclusive outcome where the evidence genuinely does not support a conclusion.');
@@ -152,6 +167,11 @@ export function renderConsole(r: EvalResults): string {
   line('hypotheses considered', 'meanHypotheses', 1);
   line('rounds', 'meanRounds', 2);
   lines.push('-'.repeat(78));
+  if ((m?.meanLlmCalls ?? 0) === 0 && (s?.meanLlmCalls ?? 0) === 0) {
+    lines.push('note: token and llm-call rows are zero because the deterministic engine');
+    lines.push('      reaches conclusions by rule evaluation, not by calling a model.');
+    lines.push('      Re-run with --engine=llm to populate them.');
+  }
 
   lines.push('');
   lines.push('Per incident:');

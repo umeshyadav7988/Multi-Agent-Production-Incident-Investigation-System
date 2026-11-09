@@ -1,6 +1,6 @@
 # Evaluation results
 
-Run at 2026-11-09T04:05:13.146Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.8s
+Run at 2026-11-09T04:09:10.695Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.8s
 
 ## Headline comparison
 
@@ -24,8 +24,8 @@ Run at 2026-11-09T04:05:13.146Z · engine `heuristic` · seed `20260401` · back
 | Tool failures survived | 2.3 | 1.5 | +0.8 ✅ |
 | LLM calls per incident | 0.0 | 0.0 | +0.0 |
 | Tokens per incident | 0 | 0 | +0 |
-| Latency per incident (ms) | 99 | 77 | +22 ⚠️ |
-| p95 latency (ms) | 260 | 275 | -15 ✅ |
+| Latency per incident (ms) | 97 | 76 | +21 ⚠️ |
+| p95 latency (ms) | 254 | 275 | -21 ✅ |
 | Evidence items gathered | 35.8 | 22.3 | +13.5 ✅ |
 | Hypotheses considered | 6.7 | 2.4 | +4.3 ✅ |
 | Investigation rounds | 1.64 | 1.00 | +0.64 ⚠️ |
@@ -65,6 +65,15 @@ Run at 2026-11-09T04:05:13.146Z · engine `heuristic` · seed `20260401` · back
 | red_herring_deploy | single-agent | 9 | 0.667 | 0.982 |
 | tool_failure | multi-agent | 15 | 1.000 | 0.972 |
 | tool_failure | single-agent | 15 | 0.800 | 0.988 |
+
+> **On the zero token and LLM-call rows.** This run used the deterministic
+> reasoning engine (`--engine=heuristic`), which reaches its conclusions by rule
+> evaluation rather than by calling a model, so it consumes no tokens by
+> construction. The accounting is implemented and exercised — every model call
+> records its input and output tokens against the same budget and reports them
+> here — it simply has nothing to count in this mode. Re-run with
+> `--engine=llm` to populate these rows; see the *LLM mode* section of the
+> README for what has and has not been measured that way.
 
 ## How to read these numbers
 
