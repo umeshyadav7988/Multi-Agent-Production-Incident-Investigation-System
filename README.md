@@ -8,6 +8,20 @@ hypothesis they presume.
 
 The system is allowed to conclude that it does not know.
 
+**▶ Live: https://multi-agent-production.vercel.app**
+
+Try the three cases that matter, no setup required:
+
+| | What it shows |
+| --- | --- |
+| [INC-5003 · multi-agent](https://multi-agent-production.vercel.app/?incident=INC-5003&approach=multi-agent&run=1) | A deploy lands 3 minutes before the outage. The system blames Stripe anyway — correctly. |
+| [INC-5003 · single-agent](https://multi-agent-production.vercel.app/?incident=INC-5003&approach=single-agent&run=1) | Same incident, same tools. The baseline blames the deploy. |
+| [INC-5010 · inconclusive](https://multi-agent-production.vercel.app/?incident=INC-5010&run=1) | Not enough evidence, and the system says so instead of guessing. |
+
+The deployment runs the deterministic engine, so those links return exactly the
+numbers printed below and captured in the screenshots — a live investigation is
+a pure function of `(seed, incidentId)`.
+
 ---
 
 ## It works — here is the proof
@@ -444,8 +458,12 @@ Set both limits to your provider's actual values to enable pacing; set them to
 
 ## Deploying to Vercel
 
+Already deployed: **https://multi-agent-production.vercel.app**
+
+To deploy your own:
+
 ```bash
-npm i -g vercel        # not currently installed in this environment
+npm i -g vercel
 vercel link
 vercel deploy          # preview
 vercel deploy --prod   # production
