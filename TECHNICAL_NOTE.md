@@ -40,8 +40,8 @@ Otherwise the hypothesis sweeping up the most loosely-related evidence always
 won — how a diagnostic system ends up blaming the latest deploy for everything.
 The cost: overwhelming evidence cannot pass the 0.95 cap.
 
-**More spend for better answers.** 16.1 tool calls against 11.8, and ~1.6 rounds
-against 1, buys +0.22 strict accuracy — a margin that widens as tools fail more.
+**More spend for better answers.** 15.8 tool calls against 11.8, and ~1.6 rounds
+against 1, buys +0.25 strict accuracy — a margin that widens as tools fail more.
 
 ## Limitations
 
@@ -49,8 +49,8 @@ Headline numbers are deterministic-engine only. The LLM path runs end-to-end
 against real models, but the free tier here caps output at 1,000 tokens/minute —
 under one hypothesis call — so no LLM-vs-LLM comparison exists. The rules were
 tuned on these 12 incidents; they hold across unseen seeds and faults to 0.45,
-but an unseen failure mode falls through to a generic category. When wrong, the
-system is confident (≈0.68) — a real weakness. Contradiction detection is narrow
+but an unseen failure mode falls through to a generic category. Confidence is a
+hand-set logistic, not fitted to observed accuracy. Contradiction detection is narrow
 deliberately; broader rules produced mostly false positives. The world is
 synthetic, single-region, 1-minute resolution.
 

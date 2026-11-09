@@ -286,8 +286,17 @@ export class ObservabilityAgent implements Agent {
     }
 
     // --- onset -------------------------------------------------------------
-    const times = symptoms.map((e) => (e.observedAt ? Date.parse(e.observedAt) : NaN)).filter((t) => !Number.isNaN(t));
-    const onset = times.length ? Math.min(...times) : Date.parse(bb.incident.window.start);
+    // Not a plain minimum. An incident is a *cluster* of correlated signals,
+    // and a single stray observation hours before the rest is noise. Taking the
+    // minimum lets one such outlier drag the estimated onset backwards, after
+    // which the genuine trigger looks like it happened "after the symptoms
+    // began" and gets penalised out of contention — which is exactly how a
+    // root cause loses to one of its own downstream effects.
+    const times = symptoms
+      .map((e) => (e.observedAt ? Date.parse(e.observedAt) : NaN))
+      .filter((t) => !Number.isNaN(t))
+      .sort((a, b) => a - b);
+    const onset = earliestCluster(times) ?? Date.parse(bb.incident.window.start);
     bb.onsetEstimate = new Date(onset).toISOString().replace(/\.\d{3}Z$/, 'Z');
     res.evidence.push(
       makeEvidence(
@@ -510,6 +519,27 @@ export class ObservabilityAgent implements Agent {
 const CHANGE_SET = new Set<string>([
   TAG.DEPLOY, TAG.CONFIG_CHANGE, TAG.FEATURE_FLAG, TAG.SCHEMA_CHANGE, TAG.LIMIT_CHANGE, TAG.INFRA_CHANGE,
 ]);
+
+/**
+ * The earliest time at which symptoms start arriving *together*.
+ *
+ * Returns the first timestamp that has at least one other symptom within
+ * `windowMin`, so an isolated early blip is skipped. Falls back to the earliest
+ * observation when nothing clusters, which is the honest answer for an incident
+ * evidenced by a single signal.
+ */
+export function earliestCluster(sortedTimes: number[], windowMin = 20, minPoints = 2): number | null {
+  if (sortedTimes.length === 0) return null;
+  if (sortedTimes.length < minPoints) return sortedTimes[0] as number;
+  const windowMs = windowMin * 60_000;
+  for (let i = 0; i <= sortedTimes.length - minPoints; i++) {
+    const start = sortedTimes[i] as number;
+    let n = 1;
+    for (let j = i + 1; j < sortedTimes.length && (sortedTimes[j] as number) - start <= windowMs; j++) n++;
+    if (n >= minPoints) return start;
+  }
+  return sortedTimes[0] as number;
+}
 
 /** Symptom tags that make a service a candidate for correlation. */
 const SYMPTOM_SET = new Set<string>([

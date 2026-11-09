@@ -4,6 +4,7 @@ import { Budget } from '../src/core/budget.ts';
 import { withRetry, CircuitBreaker, withTimeout } from '../src/core/retry.ts';
 import { ToolError } from '../src/core/errors.ts';
 import { Blackboard } from '../src/core/blackboard.ts';
+import { earliestCluster } from '../src/agents/observability.ts';
 import { Telemetry } from '../src/core/telemetry.ts';
 import { toIncidentReport, getScenario } from '../src/data/scenarios/index.ts';
 import type { Evidence, Hypothesis } from '../src/core/types.ts';
@@ -185,5 +186,68 @@ describe('Blackboard', () => {
     bb.recordCoverage('query_logs', '{"a":1}', false);
     bb.recordCoverage('query_logs', '{"a":2}', true);
     expect(bb.incompleteTools()).toEqual([]);
+  });
+});
+
+describe('onset estimation', () => {
+  const T = (iso: string) => Date.parse(iso);
+  const MIN = 60_000;
+
+  it('ignores an isolated early outlier and starts at the cluster', () => {
+    // One stray signal at 15:32, the real incident from 17:03 onwards. Taking
+    // the minimum here is what let a root cause lose to its own downstream
+    // effect: the genuine trigger looked like it came "after the symptoms".
+    const times = [
+      T('2026-04-03T15:32:00Z'),
+      T('2026-04-03T17:03:00Z'),
+      T('2026-04-03T17:05:00Z'),
+      T('2026-04-03T17:15:00Z'),
+    ];
+    expect(earliestCluster(times)).toBe(T('2026-04-03T17:03:00Z'));
+  });
+
+  it('uses the true earliest when signals genuinely cluster there', () => {
+    const times = [
+      T('2026-04-01T09:12:00Z'),
+      T('2026-04-01T09:14:00Z'),
+      T('2026-04-01T09:25:00Z'),
+    ];
+    expect(earliestCluster(times)).toBe(T('2026-04-01T09:12:00Z'));
+  });
+
+  it('falls back to the single observation when only one exists', () => {
+    const only = T('2026-04-01T09:12:00Z');
+    expect(earliestCluster([only])).toBe(only);
+  });
+
+  it('returns null for no observations at all', () => {
+    expect(earliestCluster([])).toBeNull();
+  });
+
+  it('falls back to the earliest when nothing clusters within the window', () => {
+    const times = [
+      T('2026-04-01T01:00:00Z'),
+      T('2026-04-01T05:00:00Z'),
+      T('2026-04-01T09:00:00Z'),
+    ];
+    expect(earliestCluster(times)).toBe(T('2026-04-01T01:00:00Z'));
+  });
+
+  it('skips several stray outliers, not just one', () => {
+    const times = [
+      T('2026-04-01T01:00:00Z'),
+      T('2026-04-01T03:00:00Z'),
+      T('2026-04-01T09:10:00Z'),
+      T('2026-04-01T09:12:00Z'),
+      T('2026-04-01T09:13:00Z'),
+    ];
+    expect(earliestCluster(times)).toBe(T('2026-04-01T09:10:00Z'));
+  });
+
+  it('respects a caller-supplied window', () => {
+    const times = [T('2026-04-01T09:00:00Z'), T('2026-04-01T09:30:00Z')];
+    expect(earliestCluster(times, 20)).toBe(T('2026-04-01T09:00:00Z')); // no cluster -> earliest
+    expect(earliestCluster(times, 45)).toBe(T('2026-04-01T09:00:00Z')); // clusters -> same
+    void MIN;
   });
 });

@@ -3,27 +3,30 @@ Evaluation — engine=heuristic seed=20260401 faultRate=0.12 repeats=3
 ==============================================================================
 metric                                  multi-agent  single-agent
 ------------------------------------------------------------------------------
-root-cause accuracy (strict)                  0.972         0.750
-cause category correct                        0.972         0.750
-suspect service correct                       0.972         0.750
+root-cause accuracy (strict)                  1.000         0.750
+cause category correct                        1.000         0.750
+suspect service correct                       1.000         0.750
 correct cause in top 3                        1.000         0.917
-evidence grounding                            0.951         0.957
-  marker coverage                             0.944         0.944
+evidence grounding                            0.964         0.957
+  marker coverage                             0.972         0.944
   citation validity                           1.000         1.000
-  fact ratio                                  0.894         0.925
-brier (lower better)                          0.049         0.098
-confidence when wrong (lower better)          0.697         0.456
+  fact ratio                                  0.890         0.925
+brier (lower better)                          0.035         0.098
+confidence when wrong (lower better)          0.000         0.456
 abstained w/ cause available                      0             3
 overreached on weak evidence                      0             0
-tool calls / incident                          16.1          11.8
+tool calls / incident                          15.8          11.8
 tool failures survived                          2.3           1.5
 llm calls / incident                            0.0           0.0
 tokens / incident                                 0             0
-latency ms / incident                            99            77
-evidence items / incident                      35.8          22.3
-hypotheses considered                           6.7           2.4
-rounds                                         1.64          1.00
+latency ms / incident                            96            76
+evidence items / incident                      35.3          22.3
+hypotheses considered                           6.8           2.4
+rounds                                         1.61          1.00
 ------------------------------------------------------------------------------
+note: token and llm-call rows are zero because the deterministic engine
+      reaches conclusions by rule evaluation, not by calling a model.
+      Re-run with --engine=llm to populate them.
 
 Per incident:
   INC-5001   expect deployment_regression @ order-service      multi ✅ deployment_regression @ order-service        single ✅ deployment_regression @ order-service
@@ -44,12 +47,12 @@ Per incident:
 
 | Configuration | Approach | Strict accuracy | Top-3 | Grounding | Brier | Tool calls | Rounds |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| seed 20260401, faults 0.12 | multi-agent | 0.972 | 1.000 | 0.951 | 0.049 | 16.1 | 1.64 |
+| seed 20260401, faults 0.12 | multi-agent | 1.000 | 1.000 | 0.964 | 0.035 | 15.8 | 1.61 |
 | seed 20260401, faults 0.12 | single-agent | 0.750 | 0.917 | 0.957 | 0.098 | 11.8 | 1.00 |
 | seed 777, faults 0.30 | multi-agent | 1.000 | 1.000 | 0.980 | 0.034 | 19.3 | 1.92 |
 | seed 777, faults 0.30 | single-agent | 0.583 | 0.917 | 0.958 | 0.115 | 13.4 | 1.00 |
 | seed 31337, faults 0.45 | multi-agent | 0.833 | 0.917 | 0.958 | 0.062 | 20.6 | 2.00 |
 | seed 31337, faults 0.45 | single-agent | 0.583 | 0.917 | 0.953 | 0.218 | 14.7 | 1.00 |
 
-The multi-agent system leads the baseline in every configuration (seed 20260401, faults 0.12: +0.222, seed 777, faults 0.30: +0.417, seed 31337, faults 0.45: +0.250). The margin grows as tools get less reliable, which is the retry, replan and degraded-dependency machinery earning its cost.
+The multi-agent system leads the baseline in every configuration (seed 20260401, faults 0.12: +0.250, seed 777, faults 0.30: +0.417, seed 31337, faults 0.45: +0.250). The margin grows as tools get less reliable, which is the retry, replan and degraded-dependency machinery earning its cost.
 

@@ -1,22 +1,22 @@
 termination: completed: critic accepted the leading hypothesis after 2 round(s)
      1ms  plan          system         wave 0: running 6 task(s) in parallel
      1ms  task_start    observability  T1 scan_logs (attempt 1)
-     3ms  task_start    observability  T2 scan_metrics (attempt 1)
+     2ms  task_start    observability  T2 scan_metrics (attempt 1)
      5ms  task_start    dependency     T3 scan_deployments (attempt 1)
-     6ms  task_start    dependency     T4 scan_config (attempt 1)
+     5ms  task_start    dependency     T4 scan_config (attempt 1)
      6ms  task_start    dependency     T5 map_dependencies (attempt 1)
-     7ms  task_start    dependency     T6 scan_historical (attempt 1)
-    47ms  plan          system         wave 1: running 1 task(s) in parallel
-    47ms  task_start    observability  T7 correlate_signals (attempt 1)
+     6ms  task_start    dependency     T6 scan_historical (attempt 1)
+    46ms  plan          system         wave 1: running 1 task(s) in parallel
+    46ms  task_start    observability  T7 correlate_signals (attempt 1)
     47ms  plan          system         wave 2: running 1 task(s) in parallel
     47ms  task_start    reasoning      T8 generate_hypotheses (attempt 1)
-    49ms  plan          system         wave 3: running 1 task(s) in parallel
-    49ms  task_start    reasoning      T9 score_hypotheses (attempt 1)
+    48ms  plan          system         wave 3: running 1 task(s) in parallel
+    48ms  task_start    reasoning      T9 score_hypotheses (attempt 1)
     49ms  plan          system         wave 4: running 1 task(s) in parallel
     49ms  task_start    critic         T10 critique (attempt 1)
-    50ms  critic        critic         revise: Confidence in "Third party outage in stripe-api" is 0.78 with 0 blocking and 2 major objection(s). Requesting 2 further investigation step(s) before accepting any conclusion.
-    50ms  task_end      critic         T10 ok
-    50ms  replan        orchestrator   round 0 -> 1: Confidence in "Third party outage in stripe-api" is 0.78 with 0 blocking and 2 major objection(s). Requesting 2 further investigation step(s) before accepting any conclusion.
+    49ms  critic        critic         revise: Confidence in "Third party outage in stripe-api" is 0.78 with 0 blocking and 2 major objection(s). Requesting 2 further investigation step(s) before accepting any conclusion.
+    49ms  task_end      critic         T10 ok
+    49ms  replan        orchestrator   round 0 -> 1: Confidence in "Third party outage in stripe-api" is 0.78 with 0 blocking and 2 major objection(s). Requesting 2 further investigation step(s) before accepting any conclusion.
     50ms  replan        orchestrator   round 1: 3 follow-up task(s) — Round 1: close 2 evidence gap(s) named by the critic.
     50ms  plan          system         wave 5: running 3 task(s) in parallel
     50ms  task_start    dependency     R1G0 scan_deployments (attempt 1)

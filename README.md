@@ -148,16 +148,16 @@ $ npm run eval -- --repeats=3 --sweep
 
 metric                                  multi-agent  single-agent
 ------------------------------------------------------------------------------
-root-cause accuracy (strict)                  0.972         0.750
+root-cause accuracy (strict)                  1.000         0.750
 correct cause in top 3                        1.000         0.917
-evidence grounding                            0.951         0.957
+evidence grounding                            0.964         0.957
   citation validity                           1.000         1.000
-brier (lower better)                          0.049         0.098
+brier (lower better)                          0.035         0.098
 abstained w/ cause available                      0             3
 overreached on weak evidence                      0             0
-tool calls / incident                          16.1          11.8
+tool calls / incident                          15.8          11.8
 hypotheses considered                           6.7           2.4
-rounds                                         1.64          1.00
+rounds                                         1.61          1.00
 ```
 
 Full tables, per-incident outcomes and the robustness sweep across three seeds
@@ -375,22 +375,22 @@ tables in [EVALUATION.md](EVALUATION.md).
 
 | | multi-agent | single-agent |
 | --- | ---: | ---: |
-| root-cause accuracy (strict) | **0.972** | 0.750 |
+| root-cause accuracy (strict) | **1.000** | 0.750 |
 | correct cause in top 3 | **1.000** | 0.917 |
-| evidence grounding | 0.951 | 0.957 |
+| evidence grounding | **0.964** | 0.957 |
 | citation validity (no invented ids) | 1.000 | 1.000 |
-| Brier score (lower better) | **0.049** | 0.098 |
+| Brier score (lower better) | **0.035** | 0.098 |
 | abstained when a cause existed | **0** | 3 |
 | named a cause on insufficient evidence | 0 | 0 |
 | hypotheses considered | 6.7 | 2.4 |
-| tool calls / incident | 16.1 | 11.8 |
+| tool calls / incident | 15.8 | 11.8 |
 | latency / incident | ~110 ms | ~80 ms |
 
 Holding under conditions the rules were not tuned against:
 
 | seed / fault rate | multi | single | delta |
 | --- | ---: | ---: | ---: |
-| 20260401, 0.12 | 0.972 | 0.750 | +0.222 |
+| 20260401, 0.12 | 1.000 | 0.750 | +0.250 |
 | 777, 0.30 | 1.000 | 0.583 | +0.417 |
 | 31337, 0.45 | 0.833 | 0.583 | +0.250 |
 
@@ -401,12 +401,17 @@ cause category and the correct suspect service — or to correctly report an
 inconclusive outcome. The margin grows as tools get less reliable, which is the
 retry, replan and degraded-dependency machinery earning its cost.
 
-Three results worth not glossing over. The multi-agent system's **evidence
-grounding is marginally lower** than the baseline's (0.951 vs 0.957), because it
-cites a wider and therefore slightly more inferential evidence set. Its
-**confidence when wrong is higher** (≈0.68 vs ≈0.46) — it is wrong rarely, but
-confident when it is. And it is **not uniformly better**: at the harshest
-setting it drops to 0.833, losing one incident the baseline also loses.
+Two things worth not glossing over. The system is **not uniformly better**: at
+the harshest setting it drops to 0.833, and both failures there are consequences
+of tool outages rather than of reasoning — on one incident the dependency graph
+was never retrieved, so a shared-resource fault could not be attributed to the
+resource; on the other it abstained, which under a 45% tool failure rate is the
+defensible answer.
+
+And a perfect 1.000 on the default configuration is a **result to distrust, not
+to celebrate** — it is 36 runs over 12 authored incidents, and the rules were
+tuned against them. The robustness sweep below is the number that means
+something.
 
 Where the gap actually comes from: the baseline **abstained three times when a
 cause was discoverable**, and considered 2.4 hypotheses per incident against
@@ -530,10 +535,12 @@ Stated plainly, because the assignment asks for it.
    mechanism will fall through to a generic category. This is the main reason
    to treat the deterministic numbers as a floor for orchestration value rather
    than as a claim about diagnostic breadth.
-3. **`confidence when wrong` is higher for the multi-agent system** (≈0.68 vs
-   ≈0.46). It is wrong rarely, but when it is, it is confident. A small number
-   of wrong answers makes that mean noisy, and it is a real weakness, not a
-   rounding artefact.
+3. **Calibration is only lightly evidenced.** The system is now correct on all
+   36 runs of the default configuration, so "confidence when wrong" has no
+   samples left to compute from there. At the harshest setting it is still
+   wrong twice. Confidence is a hand-set logistic, not a curve fitted to
+   observed accuracy, and should be read as a ranking signal rather than a
+   probability.
 4. **Contradiction detection is narrow by design.** It fires only on two
    readings of the same metric on the same service, or on both ends of a shared
    resource (cache, database, queue, third party). A broader rule produced

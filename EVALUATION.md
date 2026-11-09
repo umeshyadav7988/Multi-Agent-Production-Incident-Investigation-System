@@ -1,34 +1,34 @@
 # Evaluation results
 
-Run at 2026-11-09T04:09:10.695Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.8s
+Run at 2026-11-09T14:12:52.619Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.8s
 
 ## Headline comparison
 
 | Metric | Multi-agent | Single-agent | Delta |
 | --- | ---: | ---: | ---: |
 | Incidents graded | 36 | 36 | +0 |
-| Root-cause accuracy (strict) | 0.972 | 0.750 | +0.222 ✅ |
-| Cause category correct | 0.972 | 0.750 | +0.222 ✅ |
-| Suspect service correct | 0.972 | 0.750 | +0.222 ✅ |
+| Root-cause accuracy (strict) | 1.000 | 0.750 | +0.250 ✅ |
+| Cause category correct | 1.000 | 0.750 | +0.250 ✅ |
+| Suspect service correct | 1.000 | 0.750 | +0.250 ✅ |
 | Correct cause in top 3 | 1.000 | 0.917 | +0.083 ✅ |
-| Evidence grounding | 0.951 | 0.957 | -0.006 ⚠️ |
-| — required marker coverage | 0.944 | 0.944 | +0.000 |
+| Evidence grounding | 0.964 | 0.957 | +0.007 ✅ |
+| — required marker coverage | 0.972 | 0.944 | +0.028 ✅ |
 | — citation validity (no invented ids) | 1.000 | 1.000 | +0.000 |
-| — share of cited evidence that is fact | 0.894 | 0.925 | -0.031 ⚠️ |
-| Brier score (lower is better) | 0.049 | 0.098 | -0.049 ✅ |
-| Mean confidence | 0.762 | 0.690 | +0.072 ✅ |
-| Confidence when wrong (lower is better) | 0.697 | 0.456 | +0.241 ⚠️ |
+| — share of cited evidence that is fact | 0.890 | 0.925 | -0.035 ⚠️ |
+| Brier score (lower is better) | 0.035 | 0.098 | -0.063 ✅ |
+| Mean confidence | 0.768 | 0.690 | +0.078 ✅ |
+| Confidence when wrong (lower is better) | 0.000 | 0.456 | -0.456 ✅ |
 | Abstained when a cause existed | 0 | 3 | -3 ✅ |
 | Named a cause when evidence was insufficient | 0 | 0 | +0 |
-| Tool calls per incident | 16.1 | 11.8 | +4.3 ⚠️ |
-| Tool failures survived | 2.3 | 1.5 | +0.8 ✅ |
+| Tool calls per incident | 15.8 | 11.8 | +4.0 ⚠️ |
+| Tool failures survived | 2.3 | 1.5 | +0.7 ✅ |
 | LLM calls per incident | 0.0 | 0.0 | +0.0 |
 | Tokens per incident | 0 | 0 | +0 |
-| Latency per incident (ms) | 97 | 76 | +21 ⚠️ |
-| p95 latency (ms) | 254 | 275 | -21 ✅ |
-| Evidence items gathered | 35.8 | 22.3 | +13.5 ✅ |
-| Hypotheses considered | 6.7 | 2.4 | +4.3 ✅ |
-| Investigation rounds | 1.64 | 1.00 | +0.64 ⚠️ |
+| Latency per incident (ms) | 96 | 76 | +21 ⚠️ |
+| p95 latency (ms) | 317 | 274 | +43 ⚠️ |
+| Evidence items gathered | 35.3 | 22.3 | +13.1 ✅ |
+| Hypotheses considered | 6.8 | 2.4 | +4.3 ✅ |
+| Investigation rounds | 1.61 | 1.00 | +0.61 ⚠️ |
 
 ## Per-incident outcome
 
@@ -51,13 +51,13 @@ Run at 2026-11-09T04:09:10.695Z · engine `heuristic` · seed `20260401` · back
 
 | Trait | Approach | n | Accuracy | Grounding |
 | --- | --- | ---: | ---: | ---: |
-| conflicting_observations | multi-agent | 12 | 0.917 | 0.954 |
+| conflicting_observations | multi-agent | 12 | 1.000 | 0.994 |
 | conflicting_observations | single-agent | 12 | 0.750 | 0.911 |
 | incomplete_data | multi-agent | 6 | 1.000 | 0.980 |
 | incomplete_data | single-agent | 6 | 1.000 | 0.980 |
 | insufficient_evidence | multi-agent | 3 | 1.000 | 1.000 |
 | insufficient_evidence | single-agent | 3 | 1.000 | 1.000 |
-| misleading_evidence | multi-agent | 24 | 0.958 | 0.936 |
+| misleading_evidence | multi-agent | 24 | 1.000 | 0.955 |
 | misleading_evidence | single-agent | 24 | 0.625 | 0.946 |
 | multi_service | multi-agent | 15 | 1.000 | 0.987 |
 | multi_service | single-agent | 15 | 1.000 | 0.985 |
@@ -86,11 +86,11 @@ Run at 2026-11-09T04:09:10.695Z · engine `heuristic` · seed `20260401` · back
 
 | Configuration | Approach | Strict accuracy | Top-3 | Grounding | Brier | Tool calls | Rounds |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| seed 20260401, faults 0.12 | multi-agent | 0.972 | 1.000 | 0.951 | 0.049 | 16.1 | 1.64 |
+| seed 20260401, faults 0.12 | multi-agent | 1.000 | 1.000 | 0.964 | 0.035 | 15.8 | 1.61 |
 | seed 20260401, faults 0.12 | single-agent | 0.750 | 0.917 | 0.957 | 0.098 | 11.8 | 1.00 |
 | seed 777, faults 0.30 | multi-agent | 1.000 | 1.000 | 0.980 | 0.034 | 19.3 | 1.92 |
 | seed 777, faults 0.30 | single-agent | 0.583 | 0.917 | 0.958 | 0.115 | 13.4 | 1.00 |
 | seed 31337, faults 0.45 | multi-agent | 0.833 | 0.917 | 0.958 | 0.062 | 20.6 | 2.00 |
 | seed 31337, faults 0.45 | single-agent | 0.583 | 0.917 | 0.953 | 0.218 | 14.7 | 1.00 |
 
-The multi-agent system leads the baseline in every configuration (seed 20260401, faults 0.12: +0.222, seed 777, faults 0.30: +0.417, seed 31337, faults 0.45: +0.250). The margin grows as tools get less reliable, which is the retry, replan and degraded-dependency machinery earning its cost.
+The multi-agent system leads the baseline in every configuration (seed 20260401, faults 0.12: +0.250, seed 777, faults 0.30: +0.417, seed 31337, faults 0.45: +0.250). The margin grows as tools get less reliable, which is the retry, replan and degraded-dependency machinery earning its cost.
