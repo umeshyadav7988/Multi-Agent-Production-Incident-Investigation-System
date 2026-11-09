@@ -31,8 +31,16 @@ export interface HypothesisInput {
   incident: IncidentReport;
   evidence: Evidence[];
   existing: Hypothesis[];
-  /** Topology slices gathered by the Dependency agent. */
-  topology: { service: string; dependencies: string[]; dependents: string[]; critical: string[] }[];
+  /** Topology slices gathered by the Dependency agent. `edges` carries the
+   *  real relationship kind (cache / database / third_party / ...) so reasoning
+   *  never has to infer it from a service's name. */
+  topology: {
+    service: string;
+    dependencies: string[];
+    dependents: string[];
+    critical: string[];
+    edges: { to: string; kind: string }[];
+  }[];
   /** Best estimate of when the incident began, derived from evidence. */
   onsetEstimate: string | null;
 }

@@ -1,6 +1,6 @@
 # Evaluation results
 
-Run at 2026-11-09T01:38:32.641Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.9s
+Run at 2026-11-09T04:05:13.146Z · engine `heuristic` · seed `20260401` · background tool fault rate `0.12` · 3 repeat(s) per incident · total wall clock 1.8s
 
 ## Headline comparison
 
@@ -25,7 +25,7 @@ Run at 2026-11-09T01:38:32.641Z · engine `heuristic` · seed `20260401` · back
 | LLM calls per incident | 0.0 | 0.0 | +0.0 |
 | Tokens per incident | 0 | 0 | +0 |
 | Latency per incident (ms) | 99 | 77 | +22 ⚠️ |
-| p95 latency (ms) | 261 | 274 | -13 ✅ |
+| p95 latency (ms) | 260 | 275 | -15 ✅ |
 | Evidence items gathered | 35.8 | 22.3 | +13.5 ✅ |
 | Hypotheses considered | 6.7 | 2.4 | +4.3 ✅ |
 | Investigation rounds | 1.64 | 1.00 | +0.64 ⚠️ |

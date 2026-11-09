@@ -996,17 +996,29 @@ function detectContradictions(
   return dedupeByDescription(out).slice(0, 4);
 }
 
+/**
+ * The relationship kind between two services, read from the topology the
+ * Dependency agent gathered.
+ *
+ * This used to guess from service names, which meant the reasoning layer
+ * carried a list of the vendors that happen to exist in this fleet. It now
+ * reads the real edge, and falls back only to a naming convention that is
+ * generic rather than fleet-specific.
+ */
 function kindOfEdge(topology: HypothesisInput['topology'], from: string, to: string): string {
-  void topology;
-  // Edge kinds are not carried on the topology slice the reasoning agent sees,
-  // so infer from naming conventions in the fleet: this only ever widens or
-  // narrows which pairs are eligible, never which direction is reported.
-  if (/redis|cache|memcach/i.test(to)) return 'cache';
-  if (/postgres|mysql|elastic|mongo|clickhouse/i.test(to)) return 'database';
-  if (/kafka|rabbit|sqs|queue/i.test(to)) return 'async_queue';
-  if (/-api$|stripe|twilio|auth0/i.test(to)) return 'third_party';
-  void from;
-  return 'sync';
+  for (const t of topology) {
+    if (t.service !== from) continue;
+    const edge = t.edges?.find((e) => e.to === to);
+    if (edge) return edge.kind;
+  }
+  for (const t of topology) {
+    if (t.service !== to) continue;
+    const edge = t.edges?.find((e) => e.to === from);
+    if (edge) return edge.kind;
+  }
+  // Generic convention only: an external provider is conventionally named
+  // "<vendor>-api". No vendor is named here.
+  return /-api$/i.test(to) ? 'third_party' : 'sync';
 }
 
 function dedupeByDescription(xs: { description: string; evidenceIds: string[] }[]): { description: string; evidenceIds: string[] }[] {

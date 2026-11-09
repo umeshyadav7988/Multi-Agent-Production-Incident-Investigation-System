@@ -70,8 +70,9 @@ export async function runSingleAgentBaseline(
   // One reasoning pass: hypothesise, score, report. No critique, no revision.
   const topology = bb
     .evidenceByTag('dependency_edge')
-    .map((e) => e.raw as { service: string; dependencies: string[]; dependents: string[]; critical: string[] })
-    .filter((t) => !!t && typeof t === 'object' && 'service' in t);
+    .map((e) => e.raw as { service: string; dependencies: string[]; dependents: string[]; critical: string[]; edges?: { to: string; kind: string }[] })
+    .filter((t) => !!t && typeof t === 'object' && 'service' in t)
+    .map((t) => ({ ...t, edges: (t.edges ?? []).map((x) => ({ to: x.to, kind: x.kind })) }));
 
   const hyp = await engine.hypothesise({
     incident: bb.incident,

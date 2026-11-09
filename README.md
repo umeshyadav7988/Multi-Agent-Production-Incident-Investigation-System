@@ -169,7 +169,7 @@ No API key, no network, no services to stand up.
 
 ```bash
 npm install
-npm test                           # 70 tests
+npm test                           # 98 tests
 npm run list                       # the 12 synthetic incidents
 npm run investigate -- INC-5001    # run an investigation
 npm run eval                       # multi-agent vs single-agent, all incidents
@@ -285,7 +285,7 @@ src/
   eval/               grader + harness + report renderers
   cli.ts              the command line
 app/                  Next.js app: 3 API routes + a minimal UI
-tests/                70 tests
+tests/                98 tests
 .claude/agents/       tester, debugger, fixer, scenario-author
 ```
 
@@ -484,12 +484,12 @@ deterministic run and `engineDowngraded: true` rather than a 500.
 | --- | --- |
 | Runnable implementation + setup | this file; `npm install && npm test` |
 | Architecture diagram + coordination | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Synthetic incident dataset | `src/data/scenarios/` (12 incidents) |
-| Automated tests | `tests/` (70 tests), `npm test` |
+| Synthetic incident dataset | `src/data/scenarios/` (12 incidents), `npm run list` |
+| Automated tests | `tests/` (98 tests), `npm test` |
 | Evaluation vs single-agent baseline | [EVALUATION.md](EVALUATION.md), `npm run eval -- --sweep` |
-| Technical note (≤500 words) | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md) (488) |
+| Technical note (≤500 words) | [TECHNICAL_NOTE.md](TECHNICAL_NOTE.md) (499) |
 | Incomplete functionality + dependencies | below |
-| Coding assistant transcript | attached separately by the submitter |
+| Coding assistant transcript | [docs/AI_TRANSCRIPT.md](docs/AI_TRANSCRIPT.md) |
 
 ---
 

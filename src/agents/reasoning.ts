@@ -40,6 +40,7 @@ export class ReasoningAgent implements Agent {
       dependencies: t.dependencies,
       dependents: t.dependents,
       critical: t.critical,
+      edges: t.edges.map((e) => ({ to: e.to, kind: e.kind })),
     }));
 
     const out = await deps.engine.hypothesise({
