@@ -29,6 +29,21 @@ a pure function of `(seed, incidentId)`.
 Every image and every block below is a real capture from this repository, with
 the command that reproduces it. Nothing is mocked or staged.
 
+### Both approaches, side by side, on the same evidence
+
+The UI can run the multi-agent system and the single-agent baseline together on
+one incident and show where they part company. `INC-5003` is the incident built
+to catch a system that mistakes correlation for causation: the payments team
+shipped a release minutes before the failures began, but the real cause is
+Stripe returning 503s, and the release only touched JPY rounding, which never
+executed.
+
+![Multi-agent and single-agent compared on INC-5003](docs/screenshots/00-compare.png)
+
+```bash
+npm run dev    # then: /?incident=INC-5003&compare=1&run=1
+```
+
 ### The hard case: a deploy that lands 3 minutes before the outage
 
 `INC-5003` is the incident designed to catch a system that mistakes correlation
@@ -73,15 +88,31 @@ need:
 npm run investigate -- INC-5010
 ```
 
-### The UI
+### Watching the agents work
 
-![Incident list](docs/screenshots/01-ui-incident-list.png)
+The report tells you the answer; the **agent activity** panel shows how it was
+reached. Wave 0 fans six independent queries out at once, the reasoning chain
+runs strictly in order behind it, the Critic refuses the conclusion, and a
+second round opens underneath. Each task is coloured by the agent that ran it.
+
+![Incident list and controls](docs/screenshots/01-ui-incident-list.png)
 
 ```bash
 npm run dev     # http://localhost:3000
 ```
 
-Any investigation is deep-linkable: `/?incident=INC-5008&approach=single-agent&run=1`
+Any investigation is deep-linkable, which is also how the screenshots above are
+captured from real runs rather than staged:
+
+| Link | |
+| --- | --- |
+| `/?incident=INC-5003&compare=1&run=1` | both approaches, side by side |
+| `/?incident=INC-5008&approach=single-agent&run=1` | one approach |
+
+Layout is verified rather than eyeballed — `scripts/measure-layout.mjs` drives
+Chrome over the DevTools Protocol and fails if the page overflows horizontally
+at 430px. (Headless Chrome's `--screenshot` crops an overflowing page instead of
+showing the overflow, so a screenshot cannot be trusted to reveal this.)
 
 ### Agents really do run in parallel
 

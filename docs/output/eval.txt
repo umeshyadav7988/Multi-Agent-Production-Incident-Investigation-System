@@ -19,7 +19,7 @@ tool calls / incident                          15.8          11.8
 tool failures survived                          2.3           1.5
 llm calls / incident                            0.0           0.0
 tokens / incident                                 0             0
-latency ms / incident                            96            76
+latency ms / incident                            98            77
 evidence items / incident                      35.3          22.3
 hypotheses considered                           6.8           2.4
 rounds                                         1.61          1.00

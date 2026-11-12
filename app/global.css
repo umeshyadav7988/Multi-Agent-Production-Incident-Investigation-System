@@ -1,0 +1,307 @@
+/* ---------------------------------------------------------------------------
+   Incident Investigator — UI styles
+
+   A terminal palette on purpose: this is an on-call tool, and the report is
+   dense, citation-heavy text. The job of the styling is hierarchy and semantic
+   colour (what supports a conclusion, what argues against it, which agent did
+   the work), not decoration.
+   ------------------------------------------------------------------------ */
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1c2128;
+  --surface-3: #22272e;
+  --border: #30363d;
+  --border-bright: #444c56;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --dim: #6e7681;
+
+  --green: #3fb950;
+  --green-dim: #238636;
+  --red: #f85149;
+  --amber: #d29922;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --cyan: #39c5cf;
+
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* Evidence claims carry ISO timestamps, ids and comma-free service lists
+     that a browser will not break. Left alone they set the min-content width
+     of the page and push every panel off a phone screen. */
+  overflow-wrap: anywhere;
+}
+
+main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 72px; }
+@media (max-width: 560px) {
+  main { padding: 20px 14px 56px; }
+  body { font-size: 13px; }
+  select, button { font-size: 12.5px; }
+  button.run { width: 100%; }
+}
+
+/* --------------------------------------------------------------- typography */
+
+h1 { font-size: 19px; margin: 0 0 4px; letter-spacing: -0.2px; }
+h2 { font-size: 14px; margin: 0 0 10px; color: var(--text); }
+.lede { color: var(--muted); margin: 0 0 20px; max-width: 760px; }
+.muted { color: var(--muted); }
+.dim { color: var(--dim); }
+.tiny { font-size: 11.5px; }
+
+/* -------------------------------------------------------------------- panel */
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.panel-title { font-size: 12px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); }
+
+/* ----------------------------------------------------------------- controls */
+
+.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+/* Flex items refuse to shrink past their content unless told to. */
+.controls > * { min-width: 0; max-width: 100%; }
+
+select, button {
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  padding: 7px 10px;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+select:hover, button:hover:not(:disabled) { border-color: var(--border-bright); }
+select:focus-visible, button:focus-visible, .seg button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+select { flex: 1 1 280px; min-width: 0; max-width: 460px; cursor: pointer; }
+
+button.run {
+  background: var(--green-dim);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+  padding: 7px 18px;
+  cursor: pointer;
+}
+button.run:hover:not(:disabled) { background: #2ea043; }
+button.run:disabled { background: var(--surface-3); color: var(--muted); cursor: default; }
+
+/* segmented control for the mode switch */
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.seg button {
+  border: 0;
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--muted);
+  padding: 7px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button[aria-pressed='true'] { background: var(--surface-3); color: var(--text); }
+.seg button:hover:not([aria-pressed='true']) { color: var(--text); }
+
+/* ------------------------------------------------------------------- badges */
+
+.badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.badge.sev1 { color: var(--red); border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.08); }
+.badge.sev2 { color: var(--amber); border-color: rgba(210, 153, 34, 0.4); background: rgba(210, 153, 34, 0.08); }
+.badge.sev3, .badge.sev4 { color: var(--blue); border-color: rgba(88, 166, 255, 0.35); background: rgba(88, 166, 255, 0.07); }
+
+/* -------------------------------------------------------------- verdict bar */
+
+.verdict {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+.verdict .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.v-identified { color: var(--green); } .v-identified .dot { background: var(--green); }
+.v-probable   { color: var(--blue);  } .v-probable .dot   { background: var(--blue); }
+.v-inconclusive { color: var(--amber); } .v-inconclusive .dot { background: var(--amber); }
+
+/* --------------------------------------------------------------- hypothesis */
+
+.hyp { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); padding: 11px 13px; margin-bottom: 9px; }
+.hyp.top { border-color: var(--border-bright); background: var(--surface-3); }
+.hyp-head { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin-bottom: 3px; }
+.rank { color: var(--dim); font-weight: 600; }
+.hyp-title { font-weight: 600; }
+.hyp-meta { color: var(--dim); font-size: 11.5px; }
+.statement { color: var(--muted); margin: 5px 0 9px; }
+
+/* confidence meter: a number plus a bar reads faster than a number alone */
+.conf { display: inline-flex; align-items: center; gap: 7px; }
+.conf-num { font-variant-numeric: tabular-nums; font-weight: 600; }
+.conf-bar { width: 58px; height: 4px; border-radius: 2px; background: var(--surface); overflow: hidden; }
+.conf-fill { height: 100%; border-radius: 2px; }
+.c-high { color: var(--green); } .c-high .conf-fill { background: var(--green); }
+.c-moderate { color: var(--blue); } .c-moderate .conf-fill { background: var(--blue); }
+.c-low { color: var(--amber); } .c-low .conf-fill { background: var(--amber); }
+.c-speculative { color: var(--dim); } .c-speculative .conf-fill { background: var(--dim); }
+
+.ev { font-size: 11.5px; line-height: 1.55; padding: 1px 0 1px 13px; text-indent: -13px; }
+.ev.pro { color: #7ee787; }
+.ev.con { color: #ff9492; }
+.ev .src { color: var(--dim); }
+.ev-label { font-size: 11px; color: var(--muted); margin: 7px 0 2px; }
+
+/* ------------------------------------------------------------ agent timeline */
+
+.wave { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; }
+.wave-label { color: var(--dim); font-size: 11px; width: 62px; flex: none; padding-top: 3px; }
+.wave-tasks { display: flex; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.task {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+  border: 1px solid var(--border); border-left-width: 3px;
+  border-radius: 4px; padding: 2px 8px; font-size: 11.5px;
+  background: var(--surface-2); white-space: nowrap;
+}
+.task .kind { color: var(--text); }
+.task .who { color: var(--dim); font-size: 10.5px; }
+.task.failed { border-color: var(--red); opacity: 0.75; }
+
+.a-observability { border-left-color: var(--blue); }
+.a-dependency    { border-left-color: var(--purple); }
+.a-reasoning     { border-left-color: var(--green); }
+.a-critic        { border-left-color: var(--amber); }
+.a-reporting     { border-left-color: var(--cyan); }
+.a-orchestrator, .a-system { border-left-color: var(--dim); }
+
+.round-rule {
+  display: flex; align-items: center; gap: 10px;
+  margin: 10px 0 4px; color: var(--amber); font-size: 11.5px;
+}
+.round-rule::after { content: ''; flex: 1; height: 1px; background: rgba(210, 153, 34, 0.25); }
+
+.legend { display: flex; gap: 13px; flex-wrap: wrap; font-size: 11px; }
+.legend-item { display: inline-flex; align-items: center; gap: 5px; }
+/* The swatch inherits the agent colour; the label stays dim so the colour,
+   not the text, is what the eye maps onto the timeline. */
+.legend-item i { display: inline-block; width: 9px; height: 3px; border-radius: 1px; background: currentColor; }
+.legend-item span { color: var(--muted); }
+
+/* --------------------------------------------------------------- comparison */
+
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+@media (max-width: 900px) { .compare { grid-template-columns: 1fr; } }
+
+.col-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.col-name { font-weight: 600; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+.callout {
+  border: 1px solid var(--border); border-left: 3px solid var(--blue);
+  border-radius: var(--radius); background: rgba(88, 166, 255, 0.06);
+  padding: 11px 14px; margin-bottom: 12px;
+}
+.callout.disagree { border-left-color: var(--amber); background: rgba(210, 153, 34, 0.07); }
+.callout.agree { border-left-color: var(--green); background: rgba(63, 185, 80, 0.06); }
+
+/* ------------------------------------------------------------------ lists */
+
+.list { margin: 0; padding: 0; list-style: none; }
+.list li { padding: 1px 0 1px 14px; text-indent: -14px; font-size: 12px; }
+.list li::before { content: '· '; color: var(--dim); }
+.list.pro li::before { content: '+ '; color: var(--green); }
+.list.con li::before { content: '! '; color: var(--red); }
+.list.gap li::before { content: '? '; color: var(--muted); }
+
+/* ------------------------------------------------------------------ metrics */
+
+.metrics { display: flex; flex-wrap: wrap; gap: 6px; }
+.metric {
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 4px 9px; background: var(--bg); font-size: 11.5px;
+}
+.metric b { font-variant-numeric: tabular-nums; font-weight: 600; }
+.metric span { color: var(--dim); margin-left: 5px; }
+
+/* ---------------------------------------------------------------- collapsed */
+
+details > summary {
+  cursor: pointer; list-style: none; color: var(--muted);
+  font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 2px 0; user-select: none;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: '▸ '; color: var(--dim); }
+details[open] > summary::before { content: '▾ '; }
+details > summary:hover { color: var(--text); }
+details > .body { padding-top: 10px; }
+
+/* ----------------------------------------------------------------- progress */
+
+.working { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+.spinner {
+  width: 11px; height: 11px; border-radius: 50%; flex: none;
+  border: 2px solid var(--border); border-top-color: var(--blue);
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+
+.error { border-color: var(--red); color: #ff9492; }
+
+.skeleton {
+  height: 10px; border-radius: 3px; margin: 7px 0;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+a { color: var(--blue); }
+
+/* Announced to assistive technology, never painted. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

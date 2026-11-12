@@ -1,25 +1,16 @@
 import type { ReactNode } from 'react';
+import './global.css';
 
 export const metadata = {
   title: 'Incident Investigator',
-  description: 'Multi-agent production incident investigation system',
+  description:
+    'Six agents investigate a simulated production incident over unreliable tools, then report ranked hypotheses with the evidence for and against each one.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          background: '#0d1117',
-          color: '#e6edf3',
-          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-          fontSize: 14,
-          lineHeight: 1.6,
-        }}
-      >
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

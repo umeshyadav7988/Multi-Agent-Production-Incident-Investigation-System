@@ -45,10 +45,16 @@ shot() { # name url height
 }
 
 echo "==> screenshots"
-shot "01-ui-incident-list"        "${BASE}/" 780
-shot "02-multi-agent-red-herring" "${BASE}/?incident=INC-5003&approach=multi-agent&run=1" 1500
-shot "03-single-agent-same-case"  "${BASE}/?incident=INC-5003&approach=single-agent&run=1" 1200
-shot "04-inconclusive"            "${BASE}/?incident=INC-5010&approach=multi-agent&run=1" 1250
+shot "00-compare"                 "${BASE}/?incident=INC-5003&compare=1&run=1" 1700
+shot "01-ui-incident-list"        "${BASE}/" 820
+shot "02-multi-agent-red-herring" "${BASE}/?incident=INC-5003&approach=multi-agent&run=1" 2050
+shot "03-single-agent-same-case"  "${BASE}/?incident=INC-5003&approach=single-agent&run=1" 1450
+shot "04-inconclusive"            "${BASE}/?incident=INC-5010&approach=multi-agent&run=1" 1500
+
+echo "==> layout check"
+node scripts/measure-layout.mjs "${BASE}/?incident=INC-5003&compare=1&run=1" 430 900 >/dev/null \
+  && echo "    no horizontal overflow at 430px" \
+  || echo "    WARNING: layout overflows at 430px"
 
 echo "==> terminal captures"
 npx vitest run --reporter=dot 2>&1 | tail -8 > docs/output/tests.txt
